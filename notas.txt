@@ -1,0 +1,16 @@
+router.get('/account', (req, res) => {
+    res.json(db);
+});
+
+const {name} = req.params;
+    const user = users.filter((user) => user.name === user)[0];
+    res.json(users)
+
+    const db = [{
+        name: "christopher",
+        currency: "USD",
+        balance: 4100,
+        description: "a sample account",
+        transacions: [],
+    
+    }];
