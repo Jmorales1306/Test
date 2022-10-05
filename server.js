@@ -3,32 +3,23 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const pkg = require("./package.json");
 
-const apiRoot = "/api";
+const apiRoot = "/";
 
 //base simulada
-
-const users = {
-  test: {
+const users = [
+  {
     id: 1,
     firstName: "Daniel",
-    lastName: "Calvo",
+    lastName: "calvo",
     email: "dcalvo@polpocr.com",
   },
-};
+];
 
 const todos = [
   {
     id: 1,
     title: "Universidad",
     keywords: "oficio, necesario, orden",
-  },
-];
-
-const task = [
-  {
-    id: 1,
-    title: "terminar tesis de grado",
-    completed: Boolean,
   },
 ];
 
@@ -44,75 +35,41 @@ router.get("/", (req, res) => {
   return res.send(`${pkg.description} v${pkg.version}`);
 });
 
-// Create an account
-router.post("/accounts", (req, res) => {
-  // Check mandatory request parameters
-  if (!req.body.id || !req.body.firstName) {
-    return res.status(400).json({ error: "Missing parameters" });
-  }
+//Ruta GET/users
 
-  // Check if account already exists
-  if (users[req.body.id]) {
-    return res.status(409).json({ error: "user already exists" });
-  }
-
-  // Create account
-  const account = {
-    id: req.body.id,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email || `${req.body.id}'s budget`,
-  };
-  users[req.body.id] = account;
-
-  return res.status(201).json(account);
-});
-
-// Create a todos
-
-router.post("/accounts", (req, res) => {
-  // Check mandatory request parameters
-  if (!req.body.id || !req.body.title) {
-    return res.status(400).json({ error: "Missing parameters" });
-  }
-
-  // Check if account already exists
-  if (users[req.body.id]) {
-    return res.status(409).json({ error: "user already exists" });
-  }
-
-  // Create account
-  const account = {
-    id: req.body.id,
-    title: req.body.title,
-    keywords: req.body.keywords,
-  };
-  users[req.body.id] = account;
-
-  return res.status(201).json(account);
-});
-
-// Get all data for the specified account
-router.get("/accounts/:firstName", (req, res) => {
-  const account = users[req.params.firstName];
-
-  // Check if account exists
-  if (!account) {
-    return res.status(404).json({ error: "User does not exist" });
-  }
-
-  return res.json(account);
-});
-
-router.get("/accounts", (req, res) => {
+router.get("/users", (req, res) => {
   res.json(users);
 });
 
-router.get("/account/id", (req, res) => {
-  res.json(db);
+//Ruta GET/users/:id
+router.get("/users/:id", (req, res) => {
+  const { id } = req.params;
+  const user = users.filter((user) => user.id == id)[0];
+
+  return res.json(user);
 });
 
-// Start the server
+//Ruta POST/users
+app.post("/POST/users", (req, res) => {
+  const { id, firstName, lastName, email } = req.body;
+  if (id && firstName) {
+    users.push({ id, firstName, lastName, email });
+    res.json(users);
+  }
+});
+
+//const users = name email
+
+//GET /users/:id/todos
+router.get("/users/:id/todos", (req, res) => {
+  const { id } = req.params;
+  const user = users.filter((user) => user.id == id)[0];
+  
+  
+  return res.json(user && todos);
+});
+
+//  Servidor
 
 app.use(apiRoot, router);
 
